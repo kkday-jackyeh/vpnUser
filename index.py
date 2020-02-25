@@ -69,6 +69,8 @@ class OutlineOperation:
 
 
 def replaceDomain(str, newStr):
+    if newStr == "":
+        return str
     m = re.match(r'.*@(.*?):.*', str)
     oldPattern = m.groups()[0]
     return str.replace(oldPattern, newStr)
