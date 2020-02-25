@@ -4,6 +4,7 @@ import requests
 import configparser
 import os
 import sys
+import re
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
@@ -41,7 +42,7 @@ class OutlineOperation:
         r = requests.post(url, verify=False)
         if r.status_code == 201:
             self.id = r.json()["id"]
-            return r.text
+            return r.json()
         else:
             raise RunFailed("Error: can't create access key for " + self.name)
 
@@ -62,6 +63,16 @@ class OutlineOperation:
         except Exception as e:
             print(e)
 
+    def deleteAccessKey(self, id):
+        url = self.cfg.get("API_URL") + "/access-keys/" + str(id)
+        requests.delete(url, verify=False)
+
+
+def replaceDomain(str, newStr):
+    m = re.match(r'.*@(.*?):.*', str)
+    oldPattern = m.groups()[0]
+    return str.replace(oldPattern, newStr)
+
 
 def main():
     cfg = Config()
@@ -73,7 +84,9 @@ def main():
             if line != "":
                 o = OutlineOperation(line)
                 info = o.addUser()
-                output.write(line + "\t" + info + "\n")
+                accessUrl = replaceDomain(
+                    info["accessUrl"], cfg.get("DOMAIN_NAME"))
+                output.write(line + "\t" + accessUrl + "\n")
     output.close()
 
 
