@@ -51,7 +51,7 @@ class OutlineOperation:
             str(self.id) + "/name"
         r = requests.put(url, data={"name": self.name}, verify=False)
         if r.status_code == 204:
-            print(r.text)
+            print(self.name + ":\t\t\t\tOK")
         else:
             raise RunFailed("Error: can't rename for " + self.name)
 
