@@ -89,6 +89,9 @@ def main():
                 output.write(line + "\t" + accessUrl + "\n")
     output.close()
 
+    os.rename("user.txt", "user_old.txt")
+    open('user.txt', 'w').close()
+
 
 if __name__ == '__main__':
     main()
